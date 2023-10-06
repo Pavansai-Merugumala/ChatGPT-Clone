@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>ChatGPT Clone</title>
+</head>
+<body>
+    <div>
+        <h1>ChatGPT Clone</h1>
+        <div id="chat-box">
+            <!-- Chat messages will be displayed here -->
+        </div>
+        <div>
+            <input type="text" id="user-input" placeholder="Type your message..." />
+            <button id="send-button">Send</button>
+        </div>
+    </div>
+    
+    <script>
+        const chatBox = document.getElementById('chat-box');
+        const userInput = document.getElementById('user-input');
+        const sendButton = document.getElementById('send-button');
+        
+        sendButton.addEventListener('click', async () => {
+            const userMessage = userInput.value;
+            if (userMessage.trim() !== '') {
+                appendMessage('You: ' + userMessage);
+                userInput.value = '';
+                const response = await fetch('/get_response', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ userMessage })
+                });
+                const responseData = await response.json();
+                appendMessage('ChatGPT: ' + responseData.response);
+            }
+        });
+        
+        function appendMessage(message) {
+            const messageDiv = document.createElement('div');
+            messageDiv.textContent = message;
+            chatBox.appendChild(messageDiv);
+        }
+    </script>
+</body>
+</html>
